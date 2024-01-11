@@ -1,62 +1,62 @@
-### **Report: RCoE AMMA Project Updates**
+Certainly! Below is a brief step-by-step guide to help you configure a Raspberry Pi Zero W to connect to a WPA2 Enterprise network and share the internet connection via Ethernet to a router broadcasting 2.4 GHz and 5 GHz networks:
 
----
+### Step-by-Step Guide:
 
-#### **Project Modifications & Implementations:**
+#### 1. Prepare Raspberry Pi Zero W:
+- Ensure you have a Raspberry Pi Zero W with a microSD card loaded with Raspberry Pi OS or a compatible operating system.
+- Connect the Raspberry Pi Zero W to a monitor, keyboard, and power supply.
 
-1. **Validation Enhancements:**  
-   - Modified the validation check to disallow duplicate MCHNs entries for the same month. *(Date: 07-Jun-2023)*
+#### 2. Update Raspberry Pi OS:
+- Update the Raspberry Pi OS by opening a terminal and executing the following commands:
+  ```bash
+  sudo apt-get update
+  sudo apt-get upgrade
+  ```
 
-2. **AMMA Tracking ID Issue:**  
-   - Resolved the duplicate AMMA Tracking ID issue within the Line listing format. *(Date: 07-Jun-2023)*
+#### 3. Connect to WPA2 Enterprise Network:
+- Configure the Raspberry Pi Zero W to connect to the WPA2 Enterprise network by editing the `wpa_supplicant.conf` file:
+  ```bash
+  sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+  ```
+- Add the following configuration (modify as per your network details):
+  ```
+  network={
+      ssid="Your_WPA2_Enterprise_SSID"
+      key_mgmt=WPA-EAP
+      eap=PEAP
+      identity="Your_Username"
+      password="Your_Password"
+      phase1="peaplabel=0"
+      phase2="auth=MSCHAPV2"
+  }
+  ```
 
-3. **Line Listing Format Enhancements:**  
-   - Introduced a new 'Entry Status' for the Line listing format, along with a filter to facilitate month-based enrollment based on MCHN day date. *(Date: 14-Jun-2023)*
-   
-4. **Account & Backend Modifications:**  
-   - Modified account rights for L2 & L3 forms and adjusted the backend data sheet to accommodate new health districts and blocks. *(Date: 12-Jun-2023)*
-   - Established new MTC & Health block accounts as per requirements. *(Date: 15-Jun-2023)*
+#### 4. Enable IP Forwarding:
+- Enable IP forwarding to allow traffic to flow between the WPA2 Enterprise network and the Ethernet interface:
+  ```bash
+  sudo nano /etc/sysctl.conf
+  ```
+- Uncomment or add the following line:
+  ```
+  net.ipv4.ip_forward=1
+  ```
 
-5. **Member Portal Enhancements:**  
-   - Incorporated MCHN first date and last updated MCHN date in the line listing table. *(Date: 21-Jun-2023)*
+#### 5. Configure NAT:
+- Set up Network Address Translation (NAT) to share the internet connection received from the WPA2 Enterprise network via the Ethernet interface:
+  ```bash
+  sudo iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+  sudo iptables-save | sudo tee /etc/iptables/rules.v4
+  ```
 
-6. **Data & Calculation Updates:**  
-   - Updated the wasting table calculation in alignment with the new weight-for-height or length metrics.
-   - Introduced a new data extraction tool tailored for backend AMMA data.
+#### 6. Connect Raspberry Pi Zero W to Router:
+- Connect the Raspberry Pi Zero W's Ethernet port to the WAN port of your router using an Ethernet cable.
 
-7. **Project Enrollment Criteria:**  
-   - Modified enrollment conditions to allow children under 6 months, even when moderately underweight or wasted.
+#### 7. Router Configuration:
+- Configure your router to obtain an IP address automatically via DHCP from the Raspberry Pi Zero W or assign a static IP address in the appropriate subnet.
+- Set up the router to operate in its standard mode, handling DHCP, NAT, firewall, and broadcasting both 2.4 GHz and 5 GHz networks.
 
-8. **Language & Option Updates:**  
-   - Altered Q23 in line listing to display the specified option in local language.
-   - Adjusted conditions and options related to child mortality and enrollment.
+#### 8. Test Connectivity:
+- Validate the configuration by connecting devices to the 2.4 GHz and 5 GHz networks broadcasted by your router and testing internet connectivity.
 
-9. **Admin Account Permissions:**  
-   - Granted edit and delete rights within the admin account, facilitating updates to AWC details and other functionalities.
-   - Enabled editing capabilities for MTC & Health sub-admin accounts within the Admin account.
-
-10. **Form & Data Structure Revisions:**  
-    - Reconstructed L2 & L3 forms from scratch as per requirements.
-    - Introduced ID creation functionalities in L2 & L3 forms.
-    - Incorporated new fields like Child Gender, AWC Code, and Sub-Center in the L3 form.
-
----
-
-#### **RCoE Work Log for MAA Project:**
-
-- **Form Revisions:**  
-  - Overhauled the 7-23 form entirely.
-  - Updated the Follow-up Form for 7-23.
-
-- **Key Performance Indicators (KPIs):**  
-  - Redesigned KPIs for 7-23, 24-59, and PW categories.
-
-- **Data Extraction Tools:**  
-  - Developed specialized data extraction tools for Telecaller and SRP functionalities.
-
-- **Audio Player Updates:**  
-  - Enhanced the audio player to support an extended range of audio file formats.
-
----
-
-This report encapsulates the significant enhancements and modifications undertaken for the RCoE AMMA Project, ensuring improved functionality, data integrity, and user experience.
+### Conclusion:
+By following this step-by-step guide, you can configure a Raspberry Pi Zero W to connect to a WPA2 Enterprise network and share the internet connection via Ethernet to a router broadcasting 2.4 GHz and 5 GHz networks. Ensure to modify specific details such as SSID, username, password, IP addresses, and configurations according to your network requirements and environment. Regularly monitor, maintain, and optimize the setup to ensure stability, performance, and security as needed.
